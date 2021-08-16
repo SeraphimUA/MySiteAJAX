@@ -1,30 +1,24 @@
-const ao = createAjaxObject();
+async function checkUserExists(login) {
 
-function createAjaxObject() {
-    var ao = null;
-    try {
-        ao = new XMLHttpRequest();
-    }
-    catch(e) {
-        alert("AJAX not supported");
-    }
-    return ao;
-}
+    let url = "check_login.php";
 
-function checkUserExists(login) {
-    if (ao.readyState == 4 || ao.readyState == 0) {
-        if(login) {
-            ao.open("POST", "check_login.php", true);
-            ao.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            ao.onreadystatechange = () => {
-                if (ao.readyState == 4 && ao.status == 200) {
-                    resp = ao.responseText;
-                    document.getElementById("errors").innerHTML = resp;
-                }
-            }
-            ao.send("login="+login);
+    let data = new FormData();
+
+    data.append("login", login);
+
+    let response = await fetch(url, {
+        method: "POST",
+        body: data
+    });
+
+    if (response.ok) {
+        let jsonErr = await response.json();
+        if (jsonErr['error']) {
+            document.getElementById("errors").innerHTML = jsonErr['error'];
         } else {
             document.getElementById("errors").innerHTML = "";
         }
+    } else {
+        console.log("error status "+response.status);
     }
 }

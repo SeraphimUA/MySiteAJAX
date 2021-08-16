@@ -4,13 +4,13 @@ include_once("functions_db.php");
 
 $login = (isset($_POST["login"])) ? $_POST["login"] : "";
 
-$result = "";
+$result = array("error" => "");
 
 if ($login) {
     if(userExist($login)) {
-        $result = "<p style='color:red;'>Such Login Exists!</p>";
+        $result["error"] = "<p style='color:red;'>Such Login Exists!</p>";
     }
 }
 
-echo $result;
+echo json_encode($result);
 ?>
